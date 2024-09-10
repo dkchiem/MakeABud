@@ -4,16 +4,26 @@
 
 <header>
 	<h1>Make A Bud</h1>
+	<p class="prompt">The online chatting platform</p>
 </header>
 
-<slot />
+<div class="main-container">
+	<slot />
+</div>
 
 <style lang="scss">
+	.main-container {
+		height: calc(100vh - 100px);
+	}
+	.prompt {
+		text-align: center;
+	}
 	header {
 		display: flex;
+		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		height: 80px;
+		height: 100px;
 		h1 {
 			text-align: center;
 		}

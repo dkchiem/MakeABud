@@ -80,7 +80,7 @@
 	.container {
 		display: flex;
 		flex-direction: column;
-		height: calc(100vh - 80px);
+		height: 100%;
 		.chat {
 			flex: 1;
 			overflow-y: auto;
@@ -117,11 +117,6 @@
 				outline: none;
 				border-radius: 50px;
 				border: 1px solid black;
-			}
-			button {
-				border-radius: 7px;
-				padding: 4px;
-				width: 100px;
 			}
 		}
 	}

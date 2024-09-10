@@ -1,11 +1,7 @@
-<p class="prompt">The online chatting platform</p>
 <div class="container">
 	<div>
-		<p>Rules</p>
-		<p>- Do not leak your IP</p>
-		<p>- Do not send threats</p>
-		<p>- Do not solicit</p>
-
+		<p>Found a bug? Let us know!</p>
+		<a href="https://forms.gle/BZwUN3MJiZXhjrar5"><button class="bug">I found a bug!</button></a>
 		<p>What are you interested in?(Optional)</p>
 		<textarea
 			rows="4"
@@ -13,12 +9,17 @@
 			placeholder="What are you interested in? Say &quot;Cars&quot; for example."
 		/>
 	</div>
-	<a href="/chat"><button>Start</button></a>
+	<a href="/chat"><button class="start">Start chatting</button></a>
 </div>
 
 <style lang="scss">
-	.prompt {
+	.bug {
 		text-align: center;
+		margin: 20px 0;
+	.start {
+		text-align: center;
+		margin: 20 px 0;
+	}
 	}
 	.container {
 		text-align: center;
@@ -26,17 +27,12 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		flex: 1;
+		height: 100%;
 		textarea {
 			border-radius: 5px;
 			padding: 20px;
 			width: 300px;
 			font-size: 1rem;
-		}
-		button {
-			width: 300px;
-			height: 55px;
-			font-size: 1.5rem;
 		}
 	}
 </style>
