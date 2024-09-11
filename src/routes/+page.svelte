@@ -33,6 +33,7 @@
 			padding: 20px;
 			width: 300px;
 			font-size: 1rem;
+			font-family:'Reddit Mono', monospace;
 		}
 	}
 </style>

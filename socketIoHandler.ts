@@ -4,7 +4,7 @@ import { Server, Socket } from 'socket.io';
 export default function injectSocketIO(server: http.Server) {
 	const io = new Server(server);
 
-	const waitingRoom: Socket[] = [];
+	let waitingRoom: Socket[] = [];
 	const rooms: Room[] = [];
 
 	interface Room {
@@ -12,13 +12,14 @@ export default function injectSocketIO(server: http.Server) {
 		users: Socket[];
 	}
 
-	io.on('connection', (socket) => {
+	io.on('connection', async (socket) => {
 		// Send the connected user their ID
 		socket.emit('connected', { id: socket.id });
 
 		// Add the user to the waiting room
 		socket.on('joinWaitingRoom', () => {
 			waitingRoom.push(socket);
+			// console.log(waitingRoom)
 			if (waitingRoom.length >= 2) {
 				const user1 = waitingRoom.shift(); // Remove the first user
 				const user2 = waitingRoom.shift(); // Remove the second user
@@ -42,6 +43,7 @@ export default function injectSocketIO(server: http.Server) {
 		});
 
 		socket.on('disconnect', () => {
+			waitingRoom = waitingRoom.filter((user) => user != socket)
 			// If disconnected user is in a room, delete the room
 			rooms.forEach((room) => {
 				if (room.users.includes(socket)) {
@@ -55,7 +57,7 @@ export default function injectSocketIO(server: http.Server) {
 		});
 
 		socket.on('message', (message) => {
-			console.log('Message:', message);
+			if (message == "") return;
 			io.to(message.roomId).emit('message', {
 				from: message.from,
 				message: message.message

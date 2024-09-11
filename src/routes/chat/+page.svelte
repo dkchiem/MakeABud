@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { io } from '$lib/webSocketConnection';
 	import { onMount } from 'svelte';
+	import ioClient, { Socket } from 'socket.io-client';
 
 	interface Message {
 		from: string;
@@ -9,15 +9,19 @@
 		// date: string;
 	}
 
+	let io: Socket;
 	let chat: HTMLDivElement;
 	let messages: Message[] = [];
-	let textfield = '';
+	let textfield: HTMLInputElement;
+	let message = '';
 	let username = '';
 	let roomId = '';
 	let showConnected = false;
 	let partnerDisconnected = false;
 
 	onMount(() => {
+		io = ioClient('http://localhost:3000');
+
 		io.emit('joinWaitingRoom');
 		io.on('connected', (data) => {
 			username = data.id;
@@ -36,25 +40,31 @@
 		io.on('partnerDisconnected', () => {
 			partnerDisconnected = true;
 		});
+
+		return () => io.disconnect()
 	});
 
 	function sendMessage(event: SubmitEvent) {
-		io.emit('message', { from: username, message: textfield, roomId });
+		if (message == "") return;
+		io.emit('message', { from: username, message, roomId });
 		(event.target as HTMLFormElement).reset();
 	}
 </script>
 
 <div class="container">
 	<div class="chat" bind:this={chat}>
-		Your username is {username}.
-		{#if !showConnected}
-			Finding a room, please wait...
-		{:else}
+		<div class="chat-top-bar">
 			<div class="info">
-				<p>Connection successful! Start chatting now...</p>
-				<a href="/"><button>Exit</button></a>
+				<span>Your username is {username}.</span>
+				{#if !showConnected}
+					<span>Finding a room, please wait...</span>
+				{:else}
+					<span>Connection successful! Start chatting now...</span>
+				{/if}
 			</div>
-		{/if}
+			<a href="/" class="exit"><button>Exit</button></a>
+		</div>
+		
 
 		{#each messages as message}
 			<div
@@ -71,8 +81,9 @@
 	</div>
 
 	<form class="bottom-bar" on:submit={sendMessage}>
-		<input type="text" placeholder="Message" bind:value={textfield} />
+		<input type="text" placeholder="Message" bind:value={message} autofocus/>
 		<button>Send</button>
+		<button on:click={() => location.reload()}>Skip</button>
 	</form>
 </div>
 
@@ -81,14 +92,24 @@
 		display: flex;
 		flex-direction: column;
 		height: 100%;
+
 		.chat {
 			flex: 1;
 			overflow-y: auto;
 			display: flex;
 			flex-direction: column;
 			padding: 20px;
+			.chat-top-bar {
+				display: flex;
+				justify-content: space-between;
+				margin-bottom: 20px;
+			}
 			.info {
 				display: flex;
+				flex-direction: column;
+				button {
+					margin-left: auto;
+				}
 			}
 			.bubble {
 				padding: 10px 20px;
@@ -110,13 +131,15 @@
 			background-color: #f0f0f0;
 			padding: 10px;
 			display: flex;
+			gap: 10px;
 			input {
 				flex: 1;
-				margin-right: 10px;
-				padding: 20px;
+				padding: 20px 30px;
 				outline: none;
 				border-radius: 50px;
 				border: 1px solid black;
+				font-family: 'Reddit Mono', monospace;
+				font-size: 1rem;
 			}
 		}
 	}
