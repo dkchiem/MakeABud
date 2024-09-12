@@ -1,52 +1,79 @@
 <script lang="ts">
+	import { env } from '$env/dynamic/public';
+	import MessageBubble from '$lib/components/MessageBubble.svelte';
+	import type { Message } from '$lib/types/Message';
+	import { usernameStore } from '$lib/user';
+	import io, { Socket } from 'socket.io-client';
 	import { onMount } from 'svelte';
-	import ioClient, { Socket } from 'socket.io-client';
 
-	interface Message {
-		from: string;
-		message: string;
-		roomId: string;
-		// date: string;
-	}
-
-	let io: Socket;
+	let socket: Socket;
 	let chat: HTMLDivElement;
 	let messages: Message[] = [];
 	let textfield: HTMLInputElement;
 	let message = '';
-	let username = '';
+	let username: string;
 	let roomId = '';
 	let showConnected = false;
 	let partnerDisconnected = false;
 
-	onMount(() => {
-		io = ioClient('http://localhost:3000');
+	usernameStore.subscribe((value) => {
+		username = value;
+	});
 
-		io.emit('joinWaitingRoom');
-		io.on('connected', (data) => {
-			username = data.id;
-			console.log('Connected with username:', username);
+	onMount(() => {
+		if (!env.PUBLIC_URL) throw new Error('No public url provided!');
+
+		socket = io(window.origin, {
+			query: { username }
 		});
-		io.on('paired', (data) => {
+
+		socket.on('connect_error', (err) => {
+			// the reason of the error, for example "xhr poll error"
+			console.log(err.message);
+
+			// some additional description, for example the status code of the initial HTTP response
+			// @ts-ignore
+			console.log(err.description);
+
+			// some additional context, for example the XMLHttpRequest object
+			// @ts-ignore
+			console.log(err.context);
+		});
+
+		socket.connect();
+		console.log(socket, env.PUBLIC_URL);
+
+		// TODO: Change username to socket id in case usernames are the same for chat left or right
+
+		// socket.on('connected', (data) => {
+		// 	username = data.id;
+		// 	console.log('Connected with username:', username);
+		// });
+		socket.on('paired', (data) => {
 			console.log('Paired with user:', data.partnerId, 'in room:', data.roomId);
 			roomId = data.roomId;
 			showConnected = true;
 		});
-		io.on('message', (message) => {
+		socket.on('message', (message: Message) => {
 			console.log('Message received:', message);
 			messages = [...messages, message];
 			chat.scrollTop = chat.scrollHeight;
 		});
-		io.on('partnerDisconnected', () => {
+		socket.on('partnerDisconnected', () => {
 			partnerDisconnected = true;
 		});
 
-		return () => io.disconnect()
+		return () => socket.disconnect();
 	});
 
 	function sendMessage(event: SubmitEvent) {
-		if (message == "") return;
-		io.emit('message', { from: username, message, roomId });
+		if (message == '') return;
+		socket.emit('message', {
+			fromId: socket.id,
+			fromUsername: username,
+			message,
+			roomId
+		} as Message);
 		(event.target as HTMLFormElement).reset();
 	}
 </script>
@@ -64,16 +91,11 @@
 			</div>
 			<a href="/" class="exit"><button>Exit</button></a>
 		</div>
-		
 
 		{#each messages as message}
-			<div
-				class="bubble"
-				class:right={message.from === username}
-				class:left={message.from !== username}
+			<MessageBubble username={message.fromUsername} messageFromSelf={message.fromId === socket.id}
+				>{message.message}</MessageBubble
 			>
-				{message.message}
-			</div>
 		{/each}
 		{#if partnerDisconnected}
 			<p>Partner disconnected from server ☹️</p>
@@ -81,7 +103,7 @@
 	</div>
 
 	<form class="bottom-bar" on:submit={sendMessage}>
-		<input type="text" placeholder="Message" bind:value={message} autofocus/>
+		<input type="text" placeholder="Message" bind:value={message} autofocus />
 		<button>Send</button>
 		<button on:click={() => location.reload()}>Skip</button>
 	</form>
@@ -109,20 +131,6 @@
 				flex-direction: column;
 				button {
 					margin-left: auto;
-				}
-			}
-			.bubble {
-				padding: 10px 20px;
-				border: 2px black solid;
-				color: black;
-				margin-top: 5px;
-				&.left {
-					align-self: flex-start;
-					border-radius: 15px 15px 15px 0;
-				}
-				&.right {
-					align-self: flex-end;
-					border-radius: 15px 15px 0 15px;
 				}
 			}
 		}

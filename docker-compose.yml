@@ -1,0 +1,13 @@
+services:
+  makeabud:
+    build: .
+    # image: ghcr.io/dkchiem/makeabud:main
+    container_name: makeabud
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - PUBLIC_URL=http://localhost:3000
+    ports:
+      - 3000:3000
+    platform: linux/amd64
