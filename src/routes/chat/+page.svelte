@@ -96,6 +96,11 @@
 </script>
 
 <div class="container">
+	<div class="top-bar">
+		<button on:click={() => location.reload()}>Skip</button>
+		<a href="/" class="exit"><button>Exit</button></a>
+		<a href="/call" class="call"><button>Video Chat</button></a>
+	</div>
 	<div class="chat" use:scrollToBottom>
 		<div class="chat-top-bar">
 			<div class="info">
@@ -106,7 +111,6 @@
 					<span>Connection successful! Start chatting now...</span>
 				{/if}
 			</div>
-			<a href="/" class="exit"><button>Exit</button></a>
 		</div>
 
 		{#each messages as message}
@@ -123,7 +127,6 @@
 		<!-- svelte-ignore a11y-autofocus -->
 		<input type="text" placeholder="Message" bind:value={message} autofocus />
 		<button>Send</button>
-		<button on:click={() => location.reload()}>Skip</button>
 	</form>
 </div>
 
@@ -132,7 +135,19 @@
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-
+		.top-bar{
+			display: flex;
+			gap: 20px;
+			align-items: center;
+			justify-content: center;
+			button{
+				display: flex;
+				justify-content: center;
+			}
+			a {
+				text-decoration: none;
+			}
+		}
 		.chat {
 			flex: 1;
 			overflow-y: scroll;
@@ -141,12 +156,13 @@
 			padding: 20px;
 			.chat-top-bar {
 				display: flex;
-				justify-content: space-between;
+				justify-content: space-around;
 				margin-bottom: 20px;
 			}
 			.info {
 				display: flex;
 				flex-direction: column;
+				text-align: left;
 				button {
 					margin-left: auto;
 				}
