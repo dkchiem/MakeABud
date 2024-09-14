@@ -13,7 +13,7 @@
 
 <style lang="scss">
 	.main-container {
-		height: calc(100vh - 100px);
+		height: calc(100% - 100px);
 	}
 	.prompt {
 		text-align: center;

@@ -15,6 +15,9 @@
 		color: black;
 		margin-bottom: calc(5px + 1rem);
 		position: relative;
+		text-wrap: wrap;
+		overflow-wrap: break-word;
+		max-width: 100%;
 		.username {
 			position: absolute;
 			font-size: 0.7rem;

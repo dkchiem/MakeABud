@@ -1,6 +1,6 @@
 services:
   makeabud:
-    build: .
+    build: .c
     # image: ghcr.io/dkchiem/makeabud:main
     container_name: makeabud
     restart: unless-stopped

@@ -1,15 +1,13 @@
 <script lang="ts">
-	import { env } from '$env/dynamic/public';
 	import MessageBubble from '$lib/components/MessageBubble.svelte';
 	import type { Message } from '$lib/types/Message';
 	import { usernameStore } from '$lib/user';
 	import io, { Socket } from 'socket.io-client';
 	import { onMount } from 'svelte';
+	import type { Action } from 'svelte/action';
 
 	let socket: Socket;
-	let chat: HTMLDivElement;
 	let messages: Message[] = [];
-	let textfield: HTMLInputElement;
 	let message = '';
 	let username: string;
 	let roomId = '';
@@ -21,8 +19,6 @@
 	});
 
 	onMount(() => {
-		if (!env.PUBLIC_URL) throw new Error('No public url provided!');
-
 		socket = io(window.origin, {
 			query: { username }
 		});
@@ -41,7 +37,6 @@
 		});
 
 		socket.connect();
-		console.log(socket, env.PUBLIC_URL);
 
 		// TODO: Change username to socket id in case usernames are the same for chat left or right
 
@@ -55,9 +50,18 @@
 			showConnected = true;
 		});
 		socket.on('message', (message: Message) => {
-			console.log('Message received:', message);
+			// console.log('Message received:', message);
 			messages = [...messages, message];
-			chat.scrollTop = chat.scrollHeight;
+			// console.log(chat.scrollHeight);
+			// queueMicrotask(() => {
+			// 	console.log(
+			// 		chat.scrollHeight,
+			// 		chat.clientHeight,
+			// 		chat.getBoundingClientRect(),
+			// 		chat.getClientRects()
+			// 	);
+			// 	chat.scroll({ top: chat.scrollHeight, behavior: 'smooth' });
+			// });
 		});
 		socket.on('partnerDisconnected', () => {
 			partnerDisconnected = true;
@@ -75,11 +79,24 @@
 			roomId
 		} as Message);
 		(event.target as HTMLFormElement).reset();
+		message = '';
 	}
+
+	const scrollToBottom: Action = (node) => {
+		const observer = new MutationObserver(() => {
+			node.scroll({ top: node.scrollHeight, behavior: 'smooth' });
+		});
+		observer.observe(node, { childList: true });
+		return {
+			destroy() {
+				observer.disconnect();
+			}
+		};
+	};
 </script>
 
 <div class="container">
-	<div class="chat" bind:this={chat}>
+	<div class="chat" use:scrollToBottom>
 		<div class="chat-top-bar">
 			<div class="info">
 				<span>Your username is {username}.</span>
@@ -103,6 +120,7 @@
 	</div>
 
 	<form class="bottom-bar" on:submit={sendMessage}>
+		<!-- svelte-ignore a11y-autofocus -->
 		<input type="text" placeholder="Message" bind:value={message} autofocus />
 		<button>Send</button>
 		<button on:click={() => location.reload()}>Skip</button>
@@ -117,7 +135,7 @@
 
 		.chat {
 			flex: 1;
-			overflow-y: auto;
+			overflow-y: scroll;
 			display: flex;
 			flex-direction: column;
 			padding: 20px;
@@ -148,6 +166,7 @@
 				border: 1px solid black;
 				font-family: 'Reddit Mono', monospace;
 				font-size: 1rem;
+				min-width: 0;
 			}
 		}
 	}
