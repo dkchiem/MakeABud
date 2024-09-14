@@ -19,7 +19,7 @@
 	</div>
 	<p class="topics">Enter specific topics you like (Optional)</p>
 	<textarea placeholder="What are you interested in? Say &quot;Cars&quot; for example." />
-	<a href="/chat"><button class="start" on:click={start}>Start chatting</button></a>
+	<a href="/talk/chat"><button class="start" on:click={start}>Start chatting</button></a>
 </div>
 
 <style lang="scss">
