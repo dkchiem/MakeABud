@@ -17,12 +17,12 @@
 	}
 	.prompt {
 		width:28ch;
-		letter-spacing: .1em;
+		//letter-spacing: .1em;
 		border-right: 3px solid;
 		white-space: nowrap;
 		overflow: hidden;
 		font-size: 1em;
-		animation: typing 2s steps(28), blink .5 step-end infinite alternate;
+		animation: typing 2s steps(28), blink .5s step-end infinite alternate;
 	}
 	@keyframes blink {
 		50% {border-color:transparent}
