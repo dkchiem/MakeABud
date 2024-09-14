@@ -103,6 +103,7 @@
 	</div>
 	<div class="chat" use:scrollToBottom>
 		<div class="chat-top-bar">
+			<div class="text-animation">
 			<div class="info">
 				<span>Your username is {username}.</span>
 				{#if !showConnected}
@@ -110,6 +111,7 @@
 				{:else}
 					<span>Connection successful! Start chatting now...</span>
 				{/if}
+			</div>
 			</div>
 		</div>
 
