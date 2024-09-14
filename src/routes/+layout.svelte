@@ -16,8 +16,22 @@
 		height: calc(100% - 100px);
 	}
 	.prompt {
-		text-align: center;
+		width:28ch;
+		letter-spacing: .1em;
+		border-right: 3px solid;
+		white-space: nowrap;
+		overflow: hidden;
+		font-size: 1em;
+		animation: typing 2s steps(28), blink .5 step-end infinite alternate;
 	}
+	@keyframes blink {
+		50% {border-color:transparent}
+	}
+	@keyframes typing {
+		from {width: 0}
+
+	}
+	
 	header {
 		display: flex;
 		flex-direction: column;

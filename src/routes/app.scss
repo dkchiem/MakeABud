@@ -12,15 +12,18 @@ body {
 
 button {
 	padding: 20px;
-	color: #070707;
-	background-color: #e9e9e9;
-	border: 1px solid black;
+	// color: #070707;
+	// background-color: #e9e9e9;
+	// border: 1px solid black;
 	border-radius: 15px;
-	display: inline-block;
-	box-shadow: 0 7px #999;
+	// display: inline-block;
+	// box-shadow: 0 7px #999;
 	transition: 1s;
 	font-family: 'Reddit Mono', monospace;
 	font-size: 1rem;
+	background: linear-gradient(145deg, #e5e5e5, #c1c1c1);
+	box-shadow:  11px 11px 22px #8b8b8b,
+             -11px -11px 22px #ffffff;
 }
 button:hover {
 	background-color: #e9e9e9;
