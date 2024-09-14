@@ -99,7 +99,7 @@
 	<div class="top-bar">
 		<button on:click={() => location.reload()}>Skip</button>
 		<a href="/" class="exit"><button>Exit</button></a>
-		<a href="/call" class="call"><button>Video Chat</button></a>
+		<a href="/talk/call" class="call"><button>Video Chat</button></a>
 	</div>
 	<div class="chat" use:scrollToBottom>
 		<div class="chat-top-bar">
@@ -137,12 +137,12 @@
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		.top-bar{
+		.top-bar {
 			display: flex;
 			gap: 20px;
 			align-items: center;
 			justify-content: center;
-			button{
+			button {
 				display: flex;
 				justify-content: center;
 			}
