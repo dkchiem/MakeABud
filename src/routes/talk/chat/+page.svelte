@@ -2,10 +2,12 @@
 	import MessageBubble from '$lib/components/MessageBubble.svelte';
 	import type { Message } from '$lib/types/Message';
 	import { usernameStore } from '$lib/user';
+	import { createRTCOffer } from '$lib/webrtc';
 	import io, { Socket } from 'socket.io-client';
 	import { onMount } from 'svelte';
 	import type { Action } from 'svelte/action';
 
+	export let data;
 	let socket: Socket;
 	let messages: Message[] = [];
 	let message = '';
@@ -93,25 +95,34 @@
 			}
 		};
 	};
+
+	function startVideoCall() {
+		// console.log('start video call');
+		createRTCOffer(data.peerConnection);
+	}
 </script>
 
 <div class="container">
 	<div class="top-bar">
 		<button on:click={() => location.reload()}>Skip</button>
 		<a href="/" class="exit"><button>Exit</button></a>
-		<a href="/talk/call" class="call"><button>Video Chat</button></a>
+		<button on:click={startVideoCall}>Start Video Call</button>
 	</div>
 	<div class="chat" use:scrollToBottom>
 		<div class="chat-top-bar">
 			<div class="text-animation">
-			<div class="info">
-				<span>Your username is {username}.</span>
-				{#if !showConnected}
-					<span>Finding a room, please wait...</span>
-				{:else}
-					<span>Connection successful! Start chatting now...</span>
-				{/if}
-			</div>
+				<div class="info">
+					<div class="toptop">
+						<span>Your username is {username}.</span>
+					</div>
+					<div class="status">
+						{#if !showConnected}
+							<span>Finding a room, please wait...</span>
+						{:else}
+							<span>Connection successful! Start chatting now...</span>
+						{/if}
+					</div>
+				</div>
 			</div>
 		</div>
 

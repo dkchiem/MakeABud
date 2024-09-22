@@ -22,8 +22,9 @@ button {
 	font-family: 'Reddit Mono', monospace;
 	font-size: 1rem;
 	background: linear-gradient(145deg, #e5e5e5, #c1c1c1);
-	box-shadow:  11px 11px 22px #8b8b8b,
-             -11px -11px 22px #ffffff;
+	box-shadow:
+		11px 11px 22px #8b8b8b,
+		-11px -11px 22px #ffffff;
 }
 button:hover {
 	background-color: #e9e9e9;
@@ -35,18 +36,23 @@ button:active {
 	transform: translateY(4px);
 }
 .text-animation {
-	width:28ch;
+	width: 28ch;
 	//letter-spacing: .1em;
 	border-right: 3px solid;
 	white-space: nowrap;
 	overflow: hidden;
 	font-size: 1em;
-	animation: typing 2s steps(28), blink .5s step-end infinite alternate;
+	animation:
+		typing 2s steps(28),
+		blink 0.5s step-end infinite alternate;
 }
 @keyframes blink {
-	50% {border-color:transparent}
+	50% {
+		border-color: transparent;
+	}
 }
 @keyframes typing {
-	from {width: 0}
-
+	from {
+		width: 0;
+	}
 }
